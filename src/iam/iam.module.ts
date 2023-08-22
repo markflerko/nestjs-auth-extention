@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
+import { AccessTokenGuard } from 'src/iam/authetication/guards/access-token/access-token.guard';
 import jwtConfig from 'src/iam/config/jwt.config';
 import { UsersModule } from 'src/users/users.module';
 import { AuthenticationController } from './authentication/authentication.controller';
 import { AuthenticationService } from './authentication/authentication.service';
 import { BcryptService } from './hashing/bcrypt.service';
 import { HashingService } from './hashing/hashing.service';
-import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -18,6 +20,10 @@ import { ConfigModule } from '@nestjs/config';
     {
       provide: HashingService,
       useClass: BcryptService,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
     },
     AuthenticationService,
   ],
