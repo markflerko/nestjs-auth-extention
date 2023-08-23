@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignInDto } from 'src/iam/authentication/dto/sign-in.dto';
 import { SignUpDto } from 'src/iam/authentication/dto/sign-up.dto';
+import { ActiveUserData } from 'src/iam/authentication/interfaces/active-user-data.interface';
 import jwtConfig from 'src/iam/config/jwt.config';
 import { HashingService } from 'src/iam/hashing/hashing.service';
 import { User } from 'src/users/entities/user.entity';
@@ -43,7 +44,7 @@ export class AuthenticationService {
       {
         sub: user.id,
         email: user.email,
-      },
+      } as ActiveUserData,
       {
         audience: this.jwtConfiguration.audience,
         issuer: this.jwtConfiguration.issuer,
