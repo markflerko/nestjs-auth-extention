@@ -1,6 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { AuthenticationService } from 'src/iam/authentication/authentication.service';
 import { Auth } from 'src/iam/authentication/decorators/auth.decorator';
+import { RefreshTokenDto } from 'src/iam/authentication/dto/refresh-token.dto';
 import { SignInDto } from 'src/iam/authentication/dto/sign-in.dto';
 import { SignUpDto } from 'src/iam/authentication/dto/sign-up.dto';
 import { AuthType } from 'src/iam/authentication/enums/auth-type.enum';
@@ -19,6 +20,12 @@ export class AuthenticationController {
   @Post('sign-in')
   signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('refresh-tokens')
+  refreshTokens(@Body() refreshTokenDto: RefreshTokenDto) {
+    return this.authService.refreshTokens(refreshTokenDto);
   }
 
   // @HttpCode(HttpStatus.OK)
