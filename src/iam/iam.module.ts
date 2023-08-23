@@ -5,6 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenGuard } from 'src/iam/authentication/guards/authentication/access-token.guard';
 import { AuthenticationGuard } from 'src/iam/authentication/guards/authentication/authentication.guard';
 import { RefreshTokenIdsStorage } from 'src/iam/authentication/refresh-token-ids.storage/refresh-token-ids.storage';
+import { RolesGuard } from 'src/iam/authorization/guards/roles/roles.guard';
 import jwtConfig from 'src/iam/config/jwt.config';
 import { UsersModule } from 'src/users/users.module';
 import { AuthenticationController } from './authentication/authentication.controller';
@@ -26,6 +27,10 @@ import { HashingService } from './hashing/hashing.service';
     {
       provide: APP_GUARD,
       useClass: AuthenticationGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
     AccessTokenGuard,
     RefreshTokenIdsStorage,
