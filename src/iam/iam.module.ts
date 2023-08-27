@@ -5,7 +5,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { AccessTokenGuard } from 'src/iam/authentication/guards/authentication/access-token.guard';
 import { AuthenticationGuard } from 'src/iam/authentication/guards/authentication/authentication.guard';
 import { RefreshTokenIdsStorage } from 'src/iam/authentication/refresh-token-ids.storage/refresh-token-ids.storage';
-import { PermissionsGuard } from 'src/iam/authorization/guards/roles/permissions.guard';
+import { PoliciesGuard } from 'src/iam/authorization/guards/roles/policies.guard';
+import { FrameworkContributorPolicyHandler } from 'src/iam/authorization/policies/framework-contributor.policy';
+import { PolicyHandlerStorage } from 'src/iam/authorization/policies/policy-handler.storage';
 import jwtConfig from 'src/iam/config/jwt.config';
 import { UsersModule } from 'src/users/users.module';
 import { AuthenticationController } from './authentication/authentication.controller';
@@ -30,12 +32,15 @@ import { HashingService } from './hashing/hashing.service';
     },
     {
       provide: APP_GUARD,
-      useClass: PermissionsGuard,
+      useClass: PoliciesGuard,
+      // useClass: PermissionsGuard,
       // useClass: RolesGuard,
     },
     AccessTokenGuard,
     RefreshTokenIdsStorage,
     AuthenticationService,
+    PolicyHandlerStorage,
+    FrameworkContributorPolicyHandler,
   ],
   controllers: [AuthenticationController],
 })
