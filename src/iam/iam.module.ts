@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccessTokenGuard } from 'src/iam/authentication/guards/authentication/access-token.guard';
 import { AuthenticationGuard } from 'src/iam/authentication/guards/authentication/authentication.guard';
 import { RefreshTokenIdsStorage } from 'src/iam/authentication/refresh-token-ids.storage/refresh-token-ids.storage';
@@ -9,15 +10,18 @@ import { PoliciesGuard } from 'src/iam/authorization/guards/roles/policies.guard
 import { FrameworkContributorPolicyHandler } from 'src/iam/authorization/policies/framework-contributor.policy';
 import { PolicyHandlerStorage } from 'src/iam/authorization/policies/policy-handler.storage';
 import jwtConfig from 'src/iam/config/jwt.config';
-import { UsersModule } from 'src/users/users.module';
+import { ApiKey } from 'src/users/api-keys/entities/api-key.entity';
+import { User } from 'src/users/entities/user.entity';
+import { ApiKeysService } from './authentication/api-keys.service';
 import { AuthenticationController } from './authentication/authentication.controller';
 import { AuthenticationService } from './authentication/authentication.service';
 import { BcryptService } from './hashing/bcrypt.service';
 import { HashingService } from './hashing/hashing.service';
+import { ApiKeyGuard } from 'src/iam/authentication/guards/api-key/api-key.guard';
 
 @Module({
   imports: [
-    UsersModule,
+    TypeOrmModule.forFeature([User, ApiKey]),
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
   ],
@@ -37,10 +41,12 @@ import { HashingService } from './hashing/hashing.service';
       // useClass: RolesGuard,
     },
     AccessTokenGuard,
+    ApiKeyGuard,
     RefreshTokenIdsStorage,
     AuthenticationService,
     PolicyHandlerStorage,
     FrameworkContributorPolicyHandler,
+    ApiKeysService,
   ],
   controllers: [AuthenticationController],
 })

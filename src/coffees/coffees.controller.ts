@@ -8,6 +8,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { ActiveUser } from 'src/iam/authentication/decorators/active-user.decorator';
+import { Auth } from 'src/iam/authentication/decorators/auth.decorator';
+import { AuthType } from 'src/iam/authentication/enums/auth-type.enum';
 import { ActiveUserData } from 'src/iam/authentication/interfaces/active-user-data.interface';
 import { Policies } from 'src/iam/authorization/decorators/policies.decorator';
 import { Roles } from 'src/iam/authorization/decorators/roles.decorator';
@@ -17,6 +19,7 @@ import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 
+@Auth(AuthType.Bearer, AuthType.ApiKey)
 @Controller('coffees')
 export class CoffeesController {
   constructor(private readonly coffeesService: CoffeesService) {}
