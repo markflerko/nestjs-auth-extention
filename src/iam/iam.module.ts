@@ -18,6 +18,9 @@ import { AuthenticationService } from './authentication/authentication.service';
 import { BcryptService } from './hashing/bcrypt.service';
 import { HashingService } from './hashing/hashing.service';
 import { ApiKeyGuard } from 'src/iam/authentication/guards/api-key/api-key.guard';
+import { OtpAuthenticationService } from './authentication/otp-authentication.service';
+import { GoogleAuthenticationService } from './authentication/social/google-authentication.service';
+import { GoogleAuthenticationController } from './authentication/social/google-authentication.controller';
 
 @Module({
   imports: [
@@ -47,7 +50,9 @@ import { ApiKeyGuard } from 'src/iam/authentication/guards/api-key/api-key.guard
     PolicyHandlerStorage,
     FrameworkContributorPolicyHandler,
     ApiKeysService,
+    OtpAuthenticationService,
+    GoogleAuthenticationService,
   ],
-  controllers: [AuthenticationController],
+  controllers: [AuthenticationController, GoogleAuthenticationController],
 })
 export class IamModule {}

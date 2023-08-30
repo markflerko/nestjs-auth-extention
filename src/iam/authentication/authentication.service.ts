@@ -12,6 +12,7 @@ import { RefreshTokenDto } from 'src/iam/authentication/dto/refresh-token.dto';
 import { SignInDto } from 'src/iam/authentication/dto/sign-in.dto';
 import { SignUpDto } from 'src/iam/authentication/dto/sign-up.dto';
 import { ActiveUserData } from 'src/iam/authentication/interfaces/active-user-data.interface';
+import { OtpAuthenticationService } from 'src/iam/authentication/otp-authentication.service';
 import {
   InvalidatedRefreshTokenError,
   RefreshTokenIdsStorage,
@@ -30,6 +31,7 @@ export class AuthenticationService {
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
     private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
+    private readonly otpAuthenticationService: OtpAuthenticationService,
   ) {}
 
   async signIn(signInDto: SignInDto) {
@@ -46,7 +48,15 @@ export class AuthenticationService {
     if (!isEqual) {
       throw new UnauthorizedException('password aint match');
     }
-
+    if (user.isTfaEnabled) {
+      const isValid = await this.otpAuthenticationService.verifyCode(
+        signInDto.tfaCode,
+        user.tfaSecret,
+      );
+      if (!isValid) {
+        throw new UnauthorizedException('Invalid 2fa code');
+      }
+    }
     return await this.generateTokens(user);
   }
 
